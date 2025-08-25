@@ -1,3 +1,5 @@
+<img width="556" height="313" alt="resim" src="https://github.com/user-attachments/assets/7f2e107a-b191-4cbe-9009-5fdca927fdf9" />
+
 Merhabalar,
 
 Yeni bir seri başlatıyorum. Bu seride ciddi anlamda uzmanları dahi zorlayan zafiyetleri konu aldığım için **"Uzmanı Çırak Yapan Zafiyetler"** adını verdim. **Amacım hiçbir uzmanı kötülemek değil bilakis zafiyetin zorluğunu irdelemektir.**
@@ -298,3 +300,4 @@ if __name__ == "__main__":
 ```
 
 Okuduğunuz için teşekkür ederim\!
+
