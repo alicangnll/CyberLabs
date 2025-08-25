@@ -1,16 +1,37 @@
+# CyberLabs: Use-After-Free (UAF) Zafiyeti Laboratuvarı
+
+**Modül Kodu:** CL-MEM-002
+
+**Seviye:** Orta / İleri
+
+**Konu:** Bellek Bozulması Zafiyetleri (Memory Corruption)
+
+## Laboratuvarın Amacı
+
+Bu laboratuvar, CyberLabs eğitim platformu için hazırlanmış olup, sık karşılaşılan bellek bozulması zafiyetlerinden biri olan **Use-After-Free (UAF)** konusunu ele almaktadır. Katılımcıların bu laboratuvar sonunda aşağıdaki yetkinlikleri kazanması hedeflenmektedir:
+
+  - UAF zafiyetinin temel nedenlerini ve yaşam döngüsünü anlamak.
+  - Bir işaretçi (pointer) serbest bırakıldıktan sonra belleğe nasıl erişildiğini pratik olarak gözlemlemek.
+  - `g++` ve `objdump` gibi araçlarla temel statik analiz ve derleme süreçlerini uygulamak.
+  - Kontrol edilen bir laboratuvar ortamında, programın kontrol akışını değiştirmeye yönelik temel bir exploit (sömürü kodu) geliştirmek.
+
+## Senaryo
+Laboratuvar senaryosu, iki ana bileşenden oluşmaktadır:
+
+1.  `zafiyetli_sunucu.cpp`: İçerisinde kasıtlı olarak bir UAF zafiyeti barındıran, C++ ile yazılmış hedef uygulama.
+2.  `exploit.py`: Zafiyetli uygulamadaki açığı tetikleyerek programın akışını değiştiren ve önceden belirlenmiş bir fonksiyonu çağıran Python sömürü kodu.
+
+## Kurulum ve Çalıştırma Adımları
+
 <img width="556" height="313" alt="resim" src="https://github.com/user-attachments/assets/7f2e107a-b191-4cbe-9009-5fdca927fdf9" />
-
-Merhabalar,
-
-Yeni bir seri başlatıyorum. Bu seride ciddi anlamda uzmanları dahi zorlayan zafiyetleri konu aldığım için **"Uzmanı Çırak Yapan Zafiyetler"** adını verdim. **Amacım hiçbir uzmanı kötülemek değil bilakis zafiyetin zorluğunu irdelemektir.**
-
-Bellek zafiyetleri konusundan devam ediyoruz. Bugün sizlere "Use-after-free" zafiyetinin nasıl oluştuğunu anlatacağım. Konu fazlasıyla teknik olduğu için temeli olan kullanıcıların okumasını tavsiye ederim. Şimdiden keyifli okumalar dilerim.
 
 ### Disclaimer / Yasal Uyarı
 
 The information provided in this blog post is intended for educational and informational purposes only. It is not intended to encourage or promote any illegal or unethical activities, including hacking, cyberattacks, or any form of unauthorized access to computer systems, networks, or data.
 
 Bu blog yazısında sağlanan bilgiler yalnızca eğitim ve bilgilendirme amaçlıdır. Bilgisayar korsanlığı, siber saldırılar veya bilgisayar sistemlerine, ağlara veya verilere herhangi bir şekilde yetkisiz erişim de dahil olmak üzere herhangi bir yasa dışı veya etik olmayan faaliyeti teşvik etme veya reklamlama amacı taşımaz.
+
+Bu laboratuvar içeriği, tamamen **CyberLabs eğitim ortamı** için tasarlanmıştır. Buradaki bilgi ve kodların amacı, siber güvenlik uzmanlarının savunma mekanizmalarını daha iyi anlamalarına ve zafiyet analizi yeteneklerini geliştirmelerine yardımcı olmaktır. Bu materyallerin CyberLabs ortamı dışında veya yasa dışı amaçlarla kullanılması kesinlikle yasaktır ve tüm sorumluluk kullanıcıya aittir.
 
 ### Use-After-Free Zafiyeti Nedir ?
 <img width="720" height="374" alt="resim" src="https://github.com/user-attachments/assets/21456c7c-5d91-4b9b-9086-cba398fea2c2" />
@@ -300,4 +321,5 @@ if __name__ == "__main__":
 ```
 
 Okuduğunuz için teşekkür ederim\!
+
 
