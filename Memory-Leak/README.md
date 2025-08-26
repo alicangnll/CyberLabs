@@ -16,6 +16,10 @@ Bu laboratuvar, CyberLabs eğitim platformu için hazırlanmış olup, sık kar�
   - Python ile zafiyeti tetikleyen ve etkilerini kaydeden bir betik yazmak.
   - Linux sistem araçları (`ps`, `watch`) ile bir sürecin bellek kullanımını canlı olarak izleyerek zafiyetin etkisini kanıtlamak.
 
+## Disclaimer / Yasal Uyarı
+
+Bu laboratuvar içeriği, tamamen **CyberLabs eğitim ortamı** için tasarlanmıştır. Buradaki bilgi ve kodların amacı, siber güvenlik uzmanlarının ve yazılımcıların savunma mekanizmalarını daha iyi anlamalarına ve zafiyet analizi yeteneklerini geliştirmelerine yardımcı olmaktır. Bu materyallerin CyberLabs ortamı dışında veya yasa dışı amaçlarla kullanılması kesinlikle yasaktır ve tüm sorumluluk kullanıcıya aittir.
+
 ## Senaryo
 
 Laboratuvar senaryosu, iki ana bileşenden oluşmaktadır:
@@ -24,10 +28,6 @@ Laboratuvar senaryosu, iki ana bileşenden oluşmaktadır:
 2.  `trigger_and_log_leak.py`: Zafiyetli uygulamaya sürekli istek göndererek bellek sızıntısını tetikleyen ve programın artan bellek kullanımını bir dosyaya kaydeden Python betiği.
 
 ## Kurulum ve Çalıştırma Adımları
-
-### Disclaimer / Yasal Uyarı
-
-Bu laboratuvar içeriği, tamamen **CyberLabs eğitim ortamı** için tasarlanmıştır. Buradaki bilgi ve kodların amacı, siber güvenlik uzmanlarının ve yazılımcıların savunma mekanizmalarını daha iyi anlamalarına ve zafiyet analizi yeteneklerini geliştirmelerine yardımcı olmaktır. Bu materyallerin CyberLabs ortamı dışında veya yasa dışı amaçlarla kullanılması kesinlikle yasaktır ve tüm sorumluluk kullanıcıya aittir.
 
 ### Memory Leak Zafiyeti Nedir?
 
