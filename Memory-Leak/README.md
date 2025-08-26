@@ -18,7 +18,11 @@ Bu laboratuvar, CyberLabs eğitim platformu için hazırlanmış olup, sık kar�
 
 ## Disclaimer / Yasal Uyarı
 
-Bu laboratuvar içeriği, tamamen **CyberLabs eğitim ortamı** için tasarlanmıştır. Buradaki bilgi ve kodların amacı, siber güvenlik uzmanlarının ve yazılımcıların savunma mekanizmalarını daha iyi anlamalarına ve zafiyet analizi yeteneklerini geliştirmelerine yardımcı olmaktır. Bu materyallerin CyberLabs ortamı dışında veya yasa dışı amaçlarla kullanılması kesinlikle yasaktır ve tüm sorumluluk kullanıcıya aittir.
+The information provided in this blog post is intended for educational and informational purposes only. It is not intended to encourage or promote any illegal or unethical activities, including hacking, cyberattacks, or any form of unauthorized access to computer systems, networks, or data.
+
+Bu blog yazısında sağlanan bilgiler yalnızca eğitim ve bilgilendirme amaçlıdır. Bilgisayar korsanlığı, siber saldırılar veya bilgisayar sistemlerine, ağlara veya verilere herhangi bir şekilde yetkisiz erişim de dahil olmak üzere herhangi bir yasa dışı veya etik olmayan faaliyeti teşvik etme veya reklamlama amacı taşımaz.
+
+Bu laboratuvar içeriği, tamamen **CyberLabs eğitim ortamı** için tasarlanmıştır. Buradaki bilgi ve kodların amacı, siber güvenlik uzmanlarının savunma mekanizmalarını daha iyi anlamalarına ve zafiyet analizi yeteneklerini geliştirmelerine yardımcı olmaktır. Bu materyallerin CyberLabs ortamı dışında veya yasa dışı amaçlarla kullanılması kesinlikle yasaktır ve tüm sorumluluk kullanıcıya aittir.
 
 ## Senaryo
 
@@ -28,10 +32,6 @@ Laboratuvar senaryosu, iki ana bileşenden oluşmaktadır:
 2.  `trigger_and_log_leak.py`: Zafiyetli uygulamaya sürekli istek göndererek bellek sızıntısını tetikleyen ve programın artan bellek kullanımını bir dosyaya kaydeden Python betiği.
 
 ## Kurulum ve Çalıştırma Adımları
-
-### Memory Leak Zafiyeti Nedir?
-
-Bellek Sızıntısı (Memory Leak), bir programın `new` veya `malloc` gibi komutlarla dinamik olarak ayırdığı bellek alanlarını, işi bittikten sonra `delete` veya `free()` ile sisteme geri iade etmeyi unutması sonucu ortaya çıkan bir kaynak tüketimi zafiyetidir. Bu durumda, ayrılan belleğe işaret eden pointer kaybolur, ancak bellek işletim sistemi tarafından hala o programa tahsis edilmiş olarak görünür. Bu sızıntı sürekli tekrarlandığında, programın bellek kullanımı zamanla durmaksızın artar, bu da sistem kaynaklarını tüketerek programın ve nihayetinde tüm sistemin yavaşlamasına, kararsızlaşmasına veya çökmesine neden olur. Bu nedenle, kontrolü ele geçirmeye izin vermese de, ciddi bir **Hizmet Reddi (Denial of Service)** güvenlik açığı olarak kabul edilir.
 
 ### Örnek Kod İncelemesi
 
