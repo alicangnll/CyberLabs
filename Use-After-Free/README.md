@@ -21,11 +21,7 @@ Laboratuvar senaryosu, iki ana bileşenden oluşmaktadır:
 1.  `zafiyetli_sunucu.cpp`: İçerisinde kasıtlı olarak bir UAF zafiyeti barındıran, C++ ile yazılmış hedef uygulama.
 2.  `exploit.py`: Zafiyetli uygulamadaki açığı tetikleyerek programın akışını değiştiren ve önceden belirlenmiş bir fonksiyonu çağıran Python sömürü kodu.
 
-## Kurulum ve Çalıştırma Adımları
-
-<img width="556" height="313" alt="resim" src="https://github.com/user-attachments/assets/7f2e107a-b191-4cbe-9009-5fdca927fdf9" />
-
-### Disclaimer / Yasal Uyarı
+## Disclaimer / Yasal Uyarı
 
 The information provided in this blog post is intended for educational and informational purposes only. It is not intended to encourage or promote any illegal or unethical activities, including hacking, cyberattacks, or any form of unauthorized access to computer systems, networks, or data.
 
@@ -33,7 +29,7 @@ Bu blog yazısında sağlanan bilgiler yalnızca eğitim ve bilgilendirme amaçl
 
 Bu laboratuvar içeriği, tamamen **CyberLabs eğitim ortamı** için tasarlanmıştır. Buradaki bilgi ve kodların amacı, siber güvenlik uzmanlarının savunma mekanizmalarını daha iyi anlamalarına ve zafiyet analizi yeteneklerini geliştirmelerine yardımcı olmaktır. Bu materyallerin CyberLabs ortamı dışında veya yasa dışı amaçlarla kullanılması kesinlikle yasaktır ve tüm sorumluluk kullanıcıya aittir.
 
-### Use-After-Free Zafiyeti Nedir ?
+## Use-After-Free Zafiyeti Nedir ?
 <img width="720" height="374" alt="resim" src="https://github.com/user-attachments/assets/21456c7c-5d91-4b9b-9086-cba398fea2c2" />
 
 Use-After-Free (UAF), Türkçesiyle **"Serbest Bırakıldıktan Sonra Kullanım"**, bir programın dinamik olarak ayırdığı bir bellek bölgesini sisteme iade ettikten (serbest bıraktıktan) sonra, artık geçersiz olan bu bellek adresine tekrar erişmeye veya kullanmaya çalışmasıyla ortaya çıkan kritik bir bellek yönetimi güvenlik açığıdır.
@@ -41,6 +37,10 @@ Use-After-Free (UAF), Türkçesiyle **"Serbest Bırakıldıktan Sonra Kullanım"
 Bu erişim, genellikle artık o adresi işaret etmemesi gereken **"sarkan bir işaretçi"** (dangling pointer) üzerinden yapılır. Saldırganlar bu durumu, serbest bırakılan bellek alanına kendi kötü amaçlı kodlarının adresini yazarak ve programın daha sonra bu geçersiz işaretçiyi takip edip o adresi çalıştırmasını sağlayarak istismar edebilirler.
 
 Başarılı bir istismar, programın çökmesine, hassas verilerin sızdırılmasına veya sistemin kontrolünün tamamen ele geçirilmesine yol açabilir.
+
+## Kurulum ve Çalıştırma Adımları
+
+<img width="556" height="313" alt="resim" src="https://github.com/user-attachments/assets/7f2e107a-b191-4cbe-9009-5fdca927fdf9" />
 
 **Örnek Kod İncelemesi**
 
@@ -321,5 +321,6 @@ if __name__ == "__main__":
 ```
 
 Okuduğunuz için teşekkür ederim\!
+
 
 
