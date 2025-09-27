@@ -94,9 +94,6 @@ int main() {
     std::cout << "=== Double-Free Vulnerability Lab ===" << std::endl;
     std::cout << "This lab demonstrates double-free and use-after-free vulnerabilities" << std::endl;
     std::cout << "in a custom heap allocator." << std::endl;
-    std::cout << "\nTarget addresses for exploitation:" << std::endl;
-    std::cout << "&gTarget.fn = " << (void*)&gTarget.fn << std::endl;
-    std::cout << "&win        = " << (void*)win << std::endl;
     std::cout << "\nType 'help' for available commands." << std::endl;
     
     std::string command;
