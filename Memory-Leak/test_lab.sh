@@ -7,6 +7,9 @@ echo ""
 if [ ! -f "compiled/vulnerable_server" ]; then
     echo "[-] Compiled binary not found. Compiling..."
     
+    # Create compiled directory if it doesn't exist
+    mkdir -p compiled
+    
     # Detect OS and set appropriate flags
     if [[ "$OSTYPE" == "linux-gnu"* ]]; then
         echo "[+] Detected Linux, using Linux-specific flags"

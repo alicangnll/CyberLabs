@@ -7,10 +7,13 @@ echo ""
 if [ ! -f "compiled/vulnerable_code" ]; then
     echo "[-] Compiled binary not found. Compiling..."
     
+    # Create compiled directory if it doesn't exist
+    mkdir -p compiled
+    
     # Detect OS and set appropriate flags
     if [[ "$OSTYPE" == "linux-gnu"* ]]; then
         echo "[+] Detected Linux, using Linux-specific flags"
-        g++ -m64 -fno-stack-protector -z execstack -no-pie -o compiled/vulnerable_code source_code/vulnerable_code.cpp
+        g++ -m64 -fno-stack-protector -z execstack -no-pie -Wno-stringop-overflow -o compiled/vulnerable_code source_code/vulnerable_code.cpp
         # Enable execstack if needed
         if command -v execstack &> /dev/null; then
             execstack -c compiled/vulnerable_code 2>/dev/null || true

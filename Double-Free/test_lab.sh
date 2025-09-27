@@ -7,6 +7,9 @@ echo ""
 if [ ! -f "compiled/vulnerable_code" ]; then
     echo "[-] Compiled binary not found. Compiling..."
     
+    # Create compiled directory if it doesn't exist
+    mkdir -p compiled
+    
     # Detect OS and set appropriate flags
     if [[ "$OSTYPE" == "linux-gnu"* ]]; then
         echo "[+] Detected Linux, using Linux-specific flags"
@@ -51,12 +54,7 @@ echo "Test 3: Running exploit script..."
 if command -v python3 &> /dev/null; then
     if python3 -c "import pwn" 2>/dev/null; then
         echo "Running exploit..."
-        python3 source_code/exploit.py > /dev/null 2>&1
-        if [ $? -eq 0 ]; then
-            echo "[+] Exploit script runs successfully!"
-        else
-            echo "[-] Exploit script failed"
-        fi
+        python3 source_code/exploit.py 2>&1 | grep -q "Exploit completed" && echo "[+] Exploit script runs successfully!" || echo "[-] Exploit script failed"
     else
         echo "[-] pwntools not installed. Install with: pip3 install pwntools"
     fi

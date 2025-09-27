@@ -18,7 +18,7 @@ mkdir -p compiled
 
 # Compile with Linux-specific flags for buffer overflow
 echo "[+] Compiling vulnerable_code.cpp for Linux (Buffer Overflow)..."
-g++ -m64 -fno-stack-protector -z execstack -no-pie -o compiled/vulnerable_code source_code/vulnerable_code.cpp
+g++ -m64 -fno-stack-protector -z execstack -no-pie -Wno-stringop-overflow -o compiled/vulnerable_code source_code/vulnerable_code.cpp
 
 if [ $? -eq 0 ]; then
     echo "[+] Compilation successful!"

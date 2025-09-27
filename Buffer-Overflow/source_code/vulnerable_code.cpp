@@ -16,7 +16,11 @@ void vulnerable_function() {
     
     // ZAFİYET: Standart girdiden (stdin) 256 byte'a kadar veri okunuyor.
     // 64 byte'lık buffer'a sığmayacağı için yığın taşması meydana gelecek.
+    // Bu kasıtlı bir zafiyettir - compiler warning'ini bastırıyoruz
+    #pragma GCC diagnostic push
+    #pragma GCC diagnostic ignored "-Wstringop-overflow"
     read(0, buffer, 256);
+    #pragma GCC diagnostic pop
 }
 
 int main() {
