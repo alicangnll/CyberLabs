@@ -1,17 +1,22 @@
 #include <iostream>
-#include <cstdlib> // Gerekli değilse de standart olarak eklenir
-#include <unistd.h> // getpid() fonksiyonu için (Linux/macOS)
+#include <cstdlib>
+#include <unistd.h>
+#include <cstring>
+
+// Flag to be leaked
+const char* SECRET_FLAG = "FLAG: sybercode_are_the_best";
 
 /**
- * @brief Her çağrıldığında 10 byte'lık bellek sızdırır.
+ * @brief Her çağrıldığında 64 byte'lık bellek sızdırır ve flag'i yazar.
  */
 void vulnerable_func() {
-    // C++'ın 'new[]' operatörü ile heap üzerinde 10 byte'lık yer ayır.
-    char* ptr = new char[10];
+    // C++'ın 'new[]' operatörü ile heap üzerinde 64 byte'lık yer ayır.
+    char* ptr = new char[64];
     
-    // Ayrılan belleğe bir işlem yapılıyormuş gibi göstermek için.
+    // Ayrılan belleğe flag'i yaz.
     if (ptr != nullptr) {
-        ptr[0] = 'L';
+        strncpy(ptr, SECRET_FLAG, 63);
+        ptr[63] = '\0'; // Null terminator
     }
 
     // HATA: 'new[]' ile ayrılan bu belleğin 'delete[] ptr;' ile

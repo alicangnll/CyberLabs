@@ -13,8 +13,9 @@ This laboratory, prepared for the CyberLabs education platform, addresses one of
   - Understanding the basic causes of Memory Leak vulnerability and its Denial of Service (DoS) effect.
   - Grasping the critical importance of matching `new` and `delete` in dynamic memory management in C++.
   - Compiling C++ programs with `g++`.
-  - Writing a Python script that triggers the vulnerability and records its effects.
-  - Proving the impact of the vulnerability by monitoring a process's memory usage live using Linux system tools (`ps`, `watch`).
+  - Writing a Python script that triggers the vulnerability and analyzes leaked data.
+  - Proving the impact of the vulnerability by monitoring a process's memory usage live using Linux/macOS system tools (`ps`, `watch`, `gdb`).
+  - Detecting and analyzing sensitive data (flag) leaked in memory.
 
 ## Disclaimer / Legal Warning
 

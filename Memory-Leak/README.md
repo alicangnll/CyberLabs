@@ -13,8 +13,9 @@ Bu laboratuvar, CyberLabs eğitim platformu için hazırlanmış olup, sık kar�
   - Memory Leak zafiyetinin temel nedenlerini ve Denial of Service (DoS) etkisini anlamak.
   - C++'ta dinamik bellek yönetiminde `new` ve `delete` eşleşmesinin kritik önemini kavramak.
   - `g++` ile C++ programı derlemek.
-  - Python ile zafiyeti tetikleyen ve etkilerini kaydeden bir betik yazmak.
-  - Linux sistem araçları (`ps`, `watch`) ile bir sürecin bellek kullanımını canlı olarak izleyerek zafiyetin etkisini kanıtlamak.
+  - Python ile zafiyeti tetikleyen ve sızdırılan veriyi analiz eden bir betik yazmak.
+  - Linux/macOS sistem araçları (`ps`, `watch`, `gdb`) ile bir sürecin bellek kullanımını canlı olarak izleyerek zafiyetin etkisini kanıtlamak.
+  - Bellekte sızdırılan hassas veriyi (flag) tespit etme ve analiz etme.
 
 ## Disclaimer / Yasal Uyarı
 

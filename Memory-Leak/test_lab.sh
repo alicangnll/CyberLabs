@@ -58,13 +58,10 @@ echo ""
 # Test 3: Exploit script
 echo "Test 3: Running exploit script..."
 if command -v python3 &> /dev/null; then
-    echo "Running exploit for 3 seconds..."
-    timeout 3 python3 source_code/exploit.py > /dev/null 2>&1 &
-    EXPLOIT_PID=$!
-    sleep 1
-    if ps -p $EXPLOIT_PID > /dev/null 2>&1; then
+    echo "Running quick test exploit..."
+    python3 source_code/test_exploit.py > /dev/null 2>&1
+    if [ $? -eq 0 ]; then
         echo "[+] Exploit script runs successfully!"
-        kill $EXPLOIT_PID 2>/dev/null
     else
         echo "[-] Exploit script failed"
     fi

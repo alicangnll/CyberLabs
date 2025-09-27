@@ -43,10 +43,10 @@ This repository contains five different memory vulnerability laboratories design
 **Level:** Intermediate  
 **Topic:** Resource Exhaustion (Memory Leak DoS)
 
-- **Vulnerability:** Memory leak leading to Denial of Service
-- **Techniques:** Continuous memory allocation, resource exhaustion
-- **Tools:** ps, watch, memory monitoring
-- **Files:** `vulnerable_server.cpp`, `exploit.py`
+- **Vulnerability:** Memory leak leading to Denial of Service and data exposure
+- **Techniques:** Continuous memory allocation, resource exhaustion, sensitive data leakage
+- **Tools:** ps, watch, gdb, memory monitoring
+- **Files:** `vulnerable_server.cpp`, `exploit.py`, `test_exploit.py`
 
 ### 5. Use-After-Free Lab
 **Module Code:** CL-MEM-002  
