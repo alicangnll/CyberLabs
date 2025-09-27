@@ -60,6 +60,17 @@ CyberLabs Bellek Zafiyetleri Laboratuvarı, siber güvenlik uzmanlarının belle
 - Function pointer hijacking
 - Advanced heap exploitation
 
+### 6. ROP-Vulnerability Lab
+**Modül Kodu:** CL-MEM-007  
+**Seviye:** İleri  
+**Konu:** Return-Oriented Programming
+
+- ROP (Return-Oriented Programming) teknikleri
+- NX bit bypass yöntemleri
+- Gadget bulma ve chain oluşturma
+- Shellcode enjeksiyonu
+- Platform-specific ROP (Linux x86_64, macOS ARM64)
+
 ## Özellikler
 
 ### 🎯 **Eğitim Odaklı Tasarım**
@@ -132,6 +143,7 @@ cd Double-Free && ./test_lab.sh
 cd Heap-Overflow && ./test_lab.sh
 cd Memory-Leak && ./test_lab.sh
 cd Use-After-Free && ./test_lab.sh
+cd ROP-Vulnerability && ./test_lab.sh
 ```
 
 ### Linux için Derleme

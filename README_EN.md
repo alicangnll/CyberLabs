@@ -60,6 +60,17 @@ CyberLabs Memory Vulnerability Laboratory is a comprehensive educational platfor
 - Function pointer hijacking
 - Advanced heap exploitation
 
+### 6. ROP-Vulnerability Lab
+**Module Code:** CL-MEM-007  
+**Level:** Advanced  
+**Topic:** Return-Oriented Programming
+
+- ROP (Return-Oriented Programming) techniques
+- NX bit bypass methods
+- Gadget finding and chain building
+- Shellcode injection
+- Platform-specific ROP (Linux x86_64, macOS ARM64)
+
 ## Quick Start
 
 ### Prerequisites
@@ -93,6 +104,11 @@ g++ -o compiled/vulnerable_code source_code/vulnerable_code.cpp -fno-stack-prote
 
 # Test individual lab
 cd Buffer-Overflow && ./test_lab.sh
+cd Double-Free && ./test_lab.sh
+cd Heap-Overflow && ./test_lab.sh
+cd Memory-Leak && ./test_lab.sh
+cd Use-After-Free && ./test_lab.sh
+cd ROP-Vulnerability && ./test_lab.sh
 
 # Compile for Linux
 cd Heap-Overflow && ./compile_linux.sh
