@@ -13,13 +13,13 @@ if [ ! -f "compiled/zafiyetli_sunucu" ]; then
     # Detect OS and set appropriate flags
     if [[ "$OSTYPE" == "linux-gnu"* ]]; then
         echo "[+] Detected Linux, using Linux-specific flags"
-        g++ -o compiled/zafiyetli_sunucu source_code/zafiyetli_sunucu.cpp -no-pie -g -fno-stack-protector
+        g++ -o compiled/zafiyetli_sunucu source_code/zafiyetli_sunucu.cpp -no-pie -fno-stack-protector
     elif [[ "$OSTYPE" == "darwin"* ]]; then
         echo "[+] Detected macOS, using macOS-specific flags"
-        g++ -o compiled/zafiyetli_sunucu source_code/zafiyetli_sunucu.cpp -no-pie -g -fno-stack-protector
+        g++ -o compiled/zafiyetli_sunucu source_code/zafiyetli_sunucu.cpp -no-pie -fno-stack-protector
     else
         echo "[+] Unknown OS, using generic flags"
-        g++ -o compiled/zafiyetli_sunucu source_code/zafiyetli_sunucu.cpp -g
+        g++ -o compiled/zafiyetli_sunucu source_code/zafiyetli_sunucu.cpp
     fi
     
     if [ $? -ne 0 ]; then

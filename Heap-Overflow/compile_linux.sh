@@ -18,7 +18,7 @@ mkdir -p compiled
 
 # Compile with Linux-specific flags for heap overflow
 echo "[+] Compiling zafiyetli_sunucu.cpp for Linux (Heap Overflow)..."
-g++ -o compiled/zafiyetli_sunucu source_code/zafiyetli_sunucu.cpp -no-pie -g -fno-stack-protector
+g++ -o compiled/zafiyetli_sunucu source_code/zafiyetli_sunucu.cpp -no-pie -fno-stack-protector
 
 if [ $? -eq 0 ]; then
     echo "[+] Compilation successful!"

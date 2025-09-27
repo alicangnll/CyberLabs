@@ -20,7 +20,6 @@ mkdir -p compiled
 echo "[+] Compiling vulnerable_code.cpp for Linux..."
 g++ -std=c++11 -o compiled/vulnerable_code source_code/vulnerable_code.cpp \
     -no-pie \
-    -g \
     -Wno-unused-result \
     -Wno-stringop-overflow \
     -static-libgcc \

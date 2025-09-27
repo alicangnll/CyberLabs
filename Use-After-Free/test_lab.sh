@@ -13,13 +13,13 @@ if [ ! -f "compiled/zafiyetli_sunucu" ]; then
     # Detect OS and set appropriate flags
     if [[ "$OSTYPE" == "linux-gnu"* ]]; then
         echo "[+] Detected Linux, using Linux-specific flags"
-        g++ -o compiled/zafiyetli_sunucu source_codes/zafiyetli_sunucu.cpp -no-pie -g -static-libgcc -static-libstdc++
+        g++ -o compiled/zafiyetli_sunucu source_codes/zafiyetli_sunucu.cpp -no-pie -static-libgcc -static-libstdc++
     elif [[ "$OSTYPE" == "darwin"* ]]; then
         echo "[+] Detected macOS, using macOS-specific flags"
-        g++ -o compiled/zafiyetli_sunucu source_codes/zafiyetli_sunucu.cpp -no-pie -g
+        g++ -o compiled/zafiyetli_sunucu source_codes/zafiyetli_sunucu.cpp -no-pie
     else
         echo "[+] Unknown OS, using generic flags"
-        g++ -o compiled/zafiyetli_sunucu source_codes/zafiyetli_sunucu.cpp -g
+        g++ -o compiled/zafiyetli_sunucu source_codes/zafiyetli_sunucu.cpp
     fi
     
     if [ $? -ne 0 ]; then
@@ -114,7 +114,7 @@ echo "Test 6: Checking layout program..."
 if [ -f "source_codes/check_layout.cpp" ]; then
     if [ ! -f "compiled/check_layout" ]; then
         echo "[+] Compiling check_layout.cpp..."
-        g++ -o compiled/check_layout source_codes/check_layout.cpp -g
+        g++ -o compiled/check_layout source_codes/check_layout.cpp
         if [ $? -eq 0 ]; then
             echo "[+] check_layout compiled successfully"
             chmod +x compiled/check_layout

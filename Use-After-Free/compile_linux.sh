@@ -18,7 +18,7 @@ mkdir -p compiled
 
 # Compile with Linux-specific flags for use-after-free
 echo "[+] Compiling zafiyetli_sunucu.cpp for Linux (Use-After-Free)..."
-g++ -o compiled/zafiyetli_sunucu source_codes/zafiyetli_sunucu.cpp -no-pie -g -static-libgcc -static-libstdc++
+g++ -o compiled/zafiyetli_sunucu source_codes/zafiyetli_sunucu.cpp -no-pie -static-libgcc -static-libstdc++
 
 if [ $? -eq 0 ]; then
     echo "[+] Compilation successful!"

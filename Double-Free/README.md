@@ -71,14 +71,12 @@ Exploit script'i `objdump` kullanarak adresleri otomatik olarak bulur. Bu yönte
 Eğer otomatik bulma başarısız olursa, GDB ile manuel olarak bulabilirsiniz:
 
 ```bash
-# Yöntem 1: GDB ile interaktif
+# Yöntem 1: GDB ile interaktif (debug sembolleri olmadan)
 gdb ./compiled/vulnerable_code
-(gdb) break main
-(gdb) run
-(gdb) p &gTarget.fn
-$1 = (void (**)()) 0x100008090
-(gdb) p win
-$2 = {void (void)} 0x100000580 <win()>
+(gdb) info functions win
+(gdb) info variables gTarget
+(gdb) x/gx &gTarget
+(gdb) disassemble win
 (gdb) quit
 ```
 
@@ -96,17 +94,18 @@ objdump -t compiled/vulnerable_code | grep -E "(gTarget|win)"
 
 Bu bölümde, **Double Free** zafiyetinin serbest listesini (freelist) nasıl bozduğunu GDB ile adım adım göreceğiz.
 
-1.  **GDB'yi Başlatma:** Programı debug sembolleri ile derlediğinizden emin olun ve GDB'yi başlatın.
+1.  **GDB'yi Başlatma:** Debug sembolleri olmadan GDB'yi başlatın.
 
     ```bash
-    gdb ./vulnerable_code
+    gdb ./compiled/vulnerable_code
     ```
 
-2.  **Breakpoint Koyma:** Zafiyetin kalbi olan `my_free` fonksiyonuna bir durma noktası koyalım.
+2.  **Fonksiyon Adreslerini Bulma:** Debug sembolleri olmadığı için fonksiyon adreslerini manuel bulun.
 
     ```gdb
-    (gdb) break my_free
-    (gdb) run
+    (gdb) info functions my_free
+    (gdb) info functions my_alloc
+    (gdb) info variables g_head
     ```
 
 3.  **Belleği Hazırlama:** Program sizden komut bekleyecektir. Önce bir chunk ayıralım.

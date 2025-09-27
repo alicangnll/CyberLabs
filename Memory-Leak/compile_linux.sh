@@ -18,7 +18,7 @@ mkdir -p compiled
 
 # Compile with Linux-specific flags for memory leak
 echo "[+] Compiling vulnerable_server.cpp for Linux (Memory Leak)..."
-g++ -o compiled/vulnerable_server source_code/vulnerable_server.cpp -g -static-libgcc -static-libstdc++
+g++ -o compiled/vulnerable_server source_code/vulnerable_server.cpp -static-libgcc -static-libstdc++
 
 if [ $? -eq 0 ]; then
     echo "[+] Compilation successful!"

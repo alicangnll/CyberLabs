@@ -64,14 +64,12 @@ The exploit script uses `objdump` to automatically find addresses. This method i
 If automatic finding fails, you can find them manually with GDB:
 
 ```bash
-# Method 1: Interactive GDB
+# Method 1: Interactive GDB (without debug symbols)
 gdb ./compiled/vulnerable_code
-(gdb) break main
-(gdb) run
-(gdb) p &gTarget.fn
-$1 = (void (**)()) 0x100008090
-(gdb) p win
-$2 = {void (void)} 0x100000580 <win()>
+(gdb) info functions win
+(gdb) info variables gTarget
+(gdb) x/gx &gTarget
+(gdb) disassemble win
 (gdb) quit
 ```
 
@@ -89,17 +87,18 @@ objdump -t compiled/vulnerable_code | grep -E "(gTarget|win)"
 
 In this section, we will see step by step how the **Double Free** vulnerability corrupts the free list using GDB.
 
-1.  **Starting GDB:** Make sure you compiled the program with debug symbols and start GDB.
+1.  **Starting GDB:** Start GDB without debug symbols.
 
     ```bash
-    gdb ./vulnerable_code
+    gdb ./compiled/vulnerable_code
     ```
 
-2.  **Setting Breakpoints:** Let's set a breakpoint at the `my_free` function, which is the heart of the vulnerability.
+2.  **Finding Function Addresses:** Since there are no debug symbols, find function addresses manually.
 
     ```gdb
-    (gdb) break my_free
-    (gdb) run
+    (gdb) info functions my_free
+    (gdb) info functions my_alloc
+    (gdb) info variables g_head
     ```
 
 3.  **Preparing Memory:** The program will wait for your command. First, let's allocate a chunk.

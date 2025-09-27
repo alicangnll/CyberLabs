@@ -13,13 +13,13 @@ if [ ! -f "compiled/vulnerable_server" ]; then
     # Detect OS and set appropriate flags
     if [[ "$OSTYPE" == "linux-gnu"* ]]; then
         echo "[+] Detected Linux, using Linux-specific flags"
-        g++ -o compiled/vulnerable_server source_code/vulnerable_server.cpp -g -static-libgcc -static-libstdc++
+        g++ -o compiled/vulnerable_server source_code/vulnerable_server.cpp -static-libgcc -static-libstdc++
     elif [[ "$OSTYPE" == "darwin"* ]]; then
         echo "[+] Detected macOS, using macOS-specific flags"
-        g++ -o compiled/vulnerable_server source_code/vulnerable_server.cpp -g
+        g++ -o compiled/vulnerable_server source_code/vulnerable_server.cpp
     else
         echo "[+] Unknown OS, using generic flags"
-        g++ -o compiled/vulnerable_server source_code/vulnerable_server.cpp -g
+        g++ -o compiled/vulnerable_server source_code/vulnerable_server.cpp
     fi
     
     if [ $? -ne 0 ]; then
