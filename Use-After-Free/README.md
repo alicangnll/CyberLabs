@@ -38,6 +38,26 @@ Bu erişim, genellikle artık o adresi işaret etmemesi gereken **"sarkan bir i�
 
 Başarılı bir istismar, programın çökmesine, hassas verilerin sızdırılmasına veya sistemin kontrolünün tamamen ele geçirilmesine yol açabilir.
 
+## Zorluk Seviyeleri
+
+## 🟢 **KOLAY YOL: Debug Sembolleri ile**
+```bash
+# test_lab.sh dosyasında -g flag'ini ekleyin
+g++ -o compiled/zafiyetli_sunucu source_codes/zafiyetli_sunucu.cpp -no-pie -g -static-libgcc -static-libstdc++
+```
+- Debug sembolleri ile daha kolay analiz
+- GDB'de `p &variable` komutları çalışır
+- Eğitim amaçlı ideal
+
+## 🔴 **ZOR YOL: Debug Sembolleri Olmadan (Varsayılan)**
+```bash
+# Mevcut derleme (debug sembolleri yok)
+g++ -o compiled/zafiyetli_sunucu source_codes/zafiyetli_sunucu.cpp -no-pie -static-libgcc -static-libstdc++
+```
+- Gerçek dünyaya daha yakın
+- `info functions`, `disassemble` komutları gerekir
+- Production binary'lerde debug sembolleri yoktur
+
 ## Kurulum ve Çalıştırma Adımları
 
 <img width="556" height="313" alt="resim" src="https://github.com/user-attachments/assets/7f2e107a-b191-4cbe-9009-5fdca927fdf9" />

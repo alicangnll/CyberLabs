@@ -38,6 +38,26 @@ Laboratuvar senaryosu, iki ana bileşenden oluşmaktadır:
 1.  `heap_overflow.cpp`: İçerisinde kasıtlı olarak bir Heap Overflow zafiyeti barındıran, C++ ile yazılmış hedef uygulama.
 2.  `exploit_heap.py`: Zafiyetli uygulamadaki açığı tetikleyerek programın akışını değiştiren ve önceden belirlenmiş bir fonksiyonu çağıran Python sömürü kodu.
 
+## Zorluk Seviyeleri
+
+## 🟢 **KOLAY YOL: Debug Sembolleri ile**
+```bash
+# test_lab.sh dosyasında -g flag'ini ekleyin
+g++ -o compiled/zafiyetli_sunucu source_code/zafiyetli_sunucu.cpp -no-pie -g -fno-stack-protector
+```
+- Debug sembolleri ile daha kolay analiz
+- GDB'de `p &variable` komutları çalışır
+- Eğitim amaçlı ideal
+
+## 🔴 **ZOR YOL: Debug Sembolleri Olmadan (Varsayılan)**
+```bash
+# Mevcut derleme (debug sembolleri yok)
+g++ -o compiled/zafiyetli_sunucu source_code/zafiyetli_sunucu.cpp -no-pie -fno-stack-protector
+```
+- Gerçek dünyaya daha yakın
+- `info functions`, `disassemble` komutları gerekir
+- Production binary'lerde debug sembolleri yoktur
+
 ## Kurulum ve Çalıştırma Adımları
 
 ### Örnek Kod İncelemesi

@@ -77,6 +77,7 @@ CyberLabs Bellek Zafiyetleri Laboratuvarı, siber güvenlik uzmanlarının belle
 - Pwntools entegrasyonu
 - Kapsamlı test suite'leri
 - Memory monitoring araçları
+- İki farklı zorluk seviyesi (Kolay/Zor)
 
 ### 📚 **Kapsamlı Dokümantasyon**
 - Türkçe ve İngilizce README dosyaları
@@ -99,6 +100,26 @@ brew install python3
 # Python paketleri
 pip3 install pwntools
 ```
+
+### Zorluk Seviyeleri
+
+## 🟢 **KOLAY YOL: Debug Sembolleri ile**
+```bash
+# test_lab.sh dosyasında -g flag'ini ekleyin
+g++ -o compiled/vulnerable_code source_code/vulnerable_code.cpp -g -fno-stack-protector
+```
+- Debug sembolleri ile daha kolay analiz
+- GDB'de `p &variable` komutları çalışır
+- Eğitim amaçlı ideal
+
+## 🔴 **ZOR YOL: Debug Sembolleri Olmadan (Varsayılan)**
+```bash
+# Mevcut derleme (debug sembolleri yok)
+g++ -o compiled/vulnerable_code source_code/vulnerable_code.cpp -fno-stack-protector
+```
+- Gerçek dünyaya daha yakın
+- `info functions`, `disassemble` komutları gerekir
+- Production binary'lerde debug sembolleri yoktur
 
 ### Tüm Laboratuvarları Test Etme
 ```bash

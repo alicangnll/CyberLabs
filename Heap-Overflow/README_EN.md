@@ -38,6 +38,26 @@ The laboratory scenario consists of two main components:
 1.  `heap_overflow.cpp`: Target application written in C++ that intentionally contains a Heap Overflow vulnerability.
 2.  `exploit_heap.py`: Python exploitation code that triggers the vulnerability in the vulnerable application, changes the program's flow, and calls a predetermined function.
 
+## Difficulty Levels
+
+## 🟢 **EASY WAY: With Debug Symbols**
+```bash
+# Add -g flag in test_lab.sh file
+g++ -o compiled/zafiyetli_sunucu source_code/zafiyetli_sunucu.cpp -no-pie -g -fno-stack-protector
+```
+- Easier analysis with debug symbols
+- `p &variable` commands work in GDB
+- Ideal for educational purposes
+
+## 🔴 **HARD WAY: Without Debug Symbols (Default)**
+```bash
+# Current compilation (no debug symbols)
+g++ -o compiled/zafiyetli_sunucu source_code/zafiyetli_sunucu.cpp -no-pie -fno-stack-protector
+```
+- Closer to real world
+- Requires `info functions`, `disassemble` commands
+- Production binaries don't have debug symbols
+
 ## Installation and Execution Steps
 
 ### Example Code Analysis

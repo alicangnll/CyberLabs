@@ -66,6 +66,26 @@ CyberLabs Memory Vulnerability Laboratory is a comprehensive educational platfor
 - **Linux:** `g++`, `build-essential`, `libc6-dev`, `python3`, `pwntools`
 - **macOS:** `g++` (Xcode Command Line Tools), `python3`, `pwntools`
 
+### Difficulty Levels
+
+## 🟢 **EASY WAY: With Debug Symbols**
+```bash
+# Add -g flag in test_lab.sh file
+g++ -o compiled/vulnerable_code source_code/vulnerable_code.cpp -g -fno-stack-protector
+```
+- Easier analysis with debug symbols
+- `p &variable` commands work in GDB
+- Ideal for educational purposes
+
+## 🔴 **HARD WAY: Without Debug Symbols (Default)**
+```bash
+# Current compilation (no debug symbols)
+g++ -o compiled/vulnerable_code source_code/vulnerable_code.cpp -fno-stack-protector
+```
+- Closer to real world
+- Requires `info functions`, `disassemble` commands
+- Production binaries don't have debug symbols
+
 ### Running All Labs
 ```bash
 # Test all laboratories
@@ -127,6 +147,7 @@ Lab-Name/
 - Pwntools integration
 - Comprehensive test suites
 - Memory monitoring tools
+- Two difficulty levels (Easy/Hard)
 
 ### 📚 **Comprehensive Documentation**
 - Turkish and English README files

@@ -32,6 +32,26 @@ The laboratory scenario consists of two main components:
 1.  `leaky_server.cpp`: Target application written in C++ that intentionally contains a Memory Leak vulnerability.
 2.  `trigger_and_log_leak.py`: Python script that continuously sends requests to the vulnerable application to trigger the memory leak and records the program's increasing memory usage to a file.
 
+## Difficulty Levels
+
+## 🟢 **EASY WAY: With Debug Symbols**
+```bash
+# Add -g flag in test_lab.sh file
+g++ -o compiled/vulnerable_server source_code/vulnerable_server.cpp -g -static-libgcc -static-libstdc++
+```
+- Easier analysis with debug symbols
+- `p &variable` commands work in GDB
+- Ideal for educational purposes
+
+## 🔴 **HARD WAY: Without Debug Symbols (Default)**
+```bash
+# Current compilation (no debug symbols)
+g++ -o compiled/vulnerable_server source_code/vulnerable_server.cpp -static-libgcc -static-libstdc++
+```
+- Closer to real world
+- Requires `info functions`, `disassemble` commands
+- Production binaries don't have debug symbols
+
 ## Installation and Execution Steps
 
 ### Example Code Analysis

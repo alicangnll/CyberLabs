@@ -55,16 +55,37 @@ g++ -std=c++11 -o vulnerable_code vulnerable_code.cpp -no-pie -g -Wno-unused-res
 
 #### 1. Finding Required Addresses
 
-The program no longer automatically prints the addresses. The exploit script tries to find addresses automatically, but you can also find them manually:
+The program no longer automatically prints the addresses. You can find them using two different approaches:
 
-**Automatic Address Finding (Recommended):**
-The exploit script uses `objdump` to automatically find addresses. This method is faster and easier.
+## 🟢 **EASY WAY: Compilation with Debug Symbols**
 
-**Manual GDB Address Finding:**
-If automatic finding fails, you can find them manually with GDB:
+If you want to compile with debug symbols, modify the test script:
 
 ```bash
-# Method 1: Interactive GDB (without debug symbols)
+# Add -g flag in test_lab.sh file
+g++ -std=c++11 -o compiled/vulnerable_code source_code/vulnerable_code.cpp -no-pie -g -Wno-unused-result -Wno-stringop-overflow
+```
+
+**GDB Usage with Debug Symbols:**
+```bash
+gdb ./compiled/vulnerable_code
+(gdb) break main
+(gdb) run
+(gdb) p &gTarget.fn
+$1 = (void (**)()) 0x100008090
+(gdb) p win
+$2 = {void (void)} 0x100000580 <win()>
+(gdb) quit
+```
+
+## 🔴 **HARD WAY: Without Debug Symbols (Current)**
+
+**Automatic Address Finding (Recommended):**
+The exploit script uses `objdump` to automatically find addresses.
+
+**Manual GDB Address Finding:**
+```bash
+# GDB usage without debug symbols
 gdb ./compiled/vulnerable_code
 (gdb) info functions win
 (gdb) info variables gTarget
@@ -74,14 +95,13 @@ gdb ./compiled/vulnerable_code
 ```
 
 ```bash
-# Method 2: Quick finding with objdump
+# Quick finding with objdump
 objdump -t compiled/vulnerable_code | grep -E "(gTarget|win)"
 ```
 
-**Address Finding Tips:**
-- `gTarget.fn` address is usually found in `.data` or `.bss` section
-- `win` function address is found in `.text` section
-- Addresses may change with each compilation, so check each time
+**Which Way to Choose?**
+- **Easy Way:** Educational purpose, easier analysis with debug symbols
+- **Hard Way:** Closer to real world, production binaries don't have debug symbols
 
 #### 2. Detecting the Vulnerability with GDB (Step by Step)
 

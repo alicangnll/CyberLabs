@@ -24,6 +24,26 @@ The information provided in this blog post is for educational and informational 
 
 This laboratory content is designed entirely for the **CyberLabs educational environment**. The purpose of the information and codes here is to help cybersecurity experts better understand defense mechanisms and develop vulnerability analysis capabilities. The use of these materials outside the CyberLabs environment or for illegal purposes is strictly prohibited, and all responsibility belongs to the user.
 
+## Difficulty Levels
+
+## 🟢 **EASY WAY: With Debug Symbols**
+```bash
+# Add -g flag in test_lab.sh file
+g++ -m64 -fno-stack-protector -z execstack -no-pie -g -o vulnerable_code vulnerable_code.cpp
+```
+- Easier analysis with debug symbols
+- `p &variable` commands work in GDB
+- Ideal for educational purposes
+
+## 🔴 **HARD WAY: Without Debug Symbols (Default)**
+```bash
+# Current compilation (no debug symbols)
+g++ -m64 -fno-stack-protector -z execstack -no-pie -o vulnerable_code vulnerable_code.cpp
+```
+- Closer to real world
+- Requires `info functions`, `disassemble` commands
+- Production binaries don't have debug symbols
+
 ## Installation and Execution Steps
 
 ### 1. Compiling the Vulnerable Code

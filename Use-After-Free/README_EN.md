@@ -37,6 +37,26 @@ This access is usually made through a **"dangling pointer"** that should no long
 
 A successful exploitation can lead to program crashes, sensitive data leakage, or complete system takeover.
 
+## Difficulty Levels
+
+## 🟢 **EASY WAY: With Debug Symbols**
+```bash
+# Add -g flag in test_lab.sh file
+g++ -o compiled/zafiyetli_sunucu source_codes/zafiyetli_sunucu.cpp -no-pie -g -static-libgcc -static-libstdc++
+```
+- Easier analysis with debug symbols
+- `p &variable` commands work in GDB
+- Ideal for educational purposes
+
+## 🔴 **HARD WAY: Without Debug Symbols (Default)**
+```bash
+# Current compilation (no debug symbols)
+g++ -o compiled/zafiyetli_sunucu source_codes/zafiyetli_sunucu.cpp -no-pie -static-libgcc -static-libstdc++
+```
+- Closer to real world
+- Requires `info functions`, `disassemble` commands
+- Production binaries don't have debug symbols
+
 ## Installation and Execution Steps
 
 **Example Code Analysis**

@@ -62,16 +62,37 @@ g++ -std=c++11 -o vulnerable_code vulnerable_code.cpp -no-pie -g -Wno-unused-res
 
 #### 1\. Gerekli Adresleri Bulma
 
-Program artık adresleri otomatik olarak yazdırmıyor. Exploit script'i otomatik olarak adresleri bulmaya çalışır, ancak manuel olarak da bulabilirsiniz:
+Program artık adresleri otomatik olarak yazdırmıyor. İki farklı yöntemle adresleri bulabilirsiniz:
 
-**Otomatik Adres Bulma (Önerilen):**
-Exploit script'i `objdump` kullanarak adresleri otomatik olarak bulur. Bu yöntem daha hızlı ve kolaydır.
+## 🟢 **KOLAY YOL: Debug Sembolleri ile Derleme**
 
-**Manuel GDB ile Adres Bulma:**
-Eğer otomatik bulma başarısız olursa, GDB ile manuel olarak bulabilirsiniz:
+Eğer debug sembolleri ile derlemek istiyorsanız, test script'ini düzenleyin:
 
 ```bash
-# Yöntem 1: GDB ile interaktif (debug sembolleri olmadan)
+# test_lab.sh dosyasında -g flag'ini ekleyin
+g++ -std=c++11 -o compiled/vulnerable_code source_code/vulnerable_code.cpp -no-pie -g -Wno-unused-result -Wno-stringop-overflow
+```
+
+**Debug Sembolleri ile GDB Kullanımı:**
+```bash
+gdb ./compiled/vulnerable_code
+(gdb) break main
+(gdb) run
+(gdb) p &gTarget.fn
+$1 = (void (**)()) 0x100008090
+(gdb) p win
+$2 = {void (void)} 0x100000580 <win()>
+(gdb) quit
+```
+
+## 🔴 **ZOR YOL: Debug Sembolleri Olmadan (Mevcut)**
+
+**Otomatik Adres Bulma (Önerilen):**
+Exploit script'i `objdump` kullanarak adresleri otomatik olarak bulur.
+
+**Manuel GDB ile Adres Bulma:**
+```bash
+# Debug sembolleri olmadan GDB kullanımı
 gdb ./compiled/vulnerable_code
 (gdb) info functions win
 (gdb) info variables gTarget
@@ -81,14 +102,13 @@ gdb ./compiled/vulnerable_code
 ```
 
 ```bash
-# Yöntem 2: objdump ile hızlı bulma
+# objdump ile hızlı bulma
 objdump -t compiled/vulnerable_code | grep -E "(gTarget|win)"
 ```
 
-**Adres Bulma İpuçları:**
-- `gTarget.fn` adresi genellikle `.data` veya `.bss` bölümünde bulunur
-- `win` fonksiyonu adresi `.text` bölümünde bulunur
-- Adresler her derlemede değişebilir, bu yüzden her seferinde kontrol edin
+**Hangi Yolu Seçmeli?**
+- **Kolay Yol:** Eğitim amaçlı, debug sembolleri ile daha kolay analiz
+- **Zor Yol:** Gerçek dünyaya daha yakın, production binary'lerde debug sembolleri yoktur
 
 #### 2\. Zafiyetin GDB ile Tespiti (Adım Adım)
 

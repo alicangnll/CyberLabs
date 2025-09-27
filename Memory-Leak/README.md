@@ -32,6 +32,26 @@ Laboratuvar senaryosu, iki ana bileşenden oluşmaktadır:
 1.  `leaky_server.cpp`: İçerisinde kasıtlı olarak bir Memory Leak zafiyeti barındıran, C++ ile yazılmış hedef uygulama.
 2.  `trigger_and_log_leak.py`: Zafiyetli uygulamaya sürekli istek göndererek bellek sızıntısını tetikleyen ve programın artan bellek kullanımını bir dosyaya kaydeden Python betiği.
 
+## Zorluk Seviyeleri
+
+## 🟢 **KOLAY YOL: Debug Sembolleri ile**
+```bash
+# test_lab.sh dosyasında -g flag'ini ekleyin
+g++ -o compiled/vulnerable_server source_code/vulnerable_server.cpp -g -static-libgcc -static-libstdc++
+```
+- Debug sembolleri ile daha kolay analiz
+- GDB'de `p &variable` komutları çalışır
+- Eğitim amaçlı ideal
+
+## 🔴 **ZOR YOL: Debug Sembolleri Olmadan (Varsayılan)**
+```bash
+# Mevcut derleme (debug sembolleri yok)
+g++ -o compiled/vulnerable_server source_code/vulnerable_server.cpp -static-libgcc -static-libstdc++
+```
+- Gerçek dünyaya daha yakın
+- `info functions`, `disassemble` komutları gerekir
+- Production binary'lerde debug sembolleri yoktur
+
 ## Kurulum ve Çalıştırma Adımları
 
 ### Örnek Kod İncelemesi

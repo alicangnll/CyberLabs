@@ -24,6 +24,26 @@ Bu blog yazısında sağlanan bilgiler yalnızca eğitim ve bilgilendirme amaçl
 
 Bu laboratuvar içeriği, tamamen **CyberLabs eğitim ortamı** için tasarlanmıştır. Buradaki bilgi ve kodların amacı, siber güvenlik uzmanlarının savunma mekanizmalarını daha iyi anlamalarına ve zafiyet analizi yeteneklerini geliştirmelerine yardımcı olmaktır. Bu materyallerin CyberLabs ortamı dışında veya yasa dışı amaçlarla kullanılması kesinlikle yasaktır ve tüm sorumluluk kullanıcıya aittir.
 
+## Zorluk Seviyeleri
+
+## 🟢 **KOLAY YOL: Debug Sembolleri ile**
+```bash
+# test_lab.sh dosyasında -g flag'ini ekleyin
+g++ -m64 -fno-stack-protector -z execstack -no-pie -g -o vulnerable_code vulnerable_code.cpp
+```
+- Debug sembolleri ile daha kolay analiz
+- GDB'de `p &variable` komutları çalışır
+- Eğitim amaçlı ideal
+
+## 🔴 **ZOR YOL: Debug Sembolleri Olmadan (Varsayılan)**
+```bash
+# Mevcut derleme (debug sembolleri yok)
+g++ -m64 -fno-stack-protector -z execstack -no-pie -o vulnerable_code vulnerable_code.cpp
+```
+- Gerçek dünyaya daha yakın
+- `info functions`, `disassemble` komutları gerekir
+- Production binary'lerde debug sembolleri yoktur
+
 ## Kurulum ve Çalıştırma Adımları
 
 ### 1\. Zafiyetli Kodu Derleme
