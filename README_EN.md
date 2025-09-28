@@ -212,8 +212,8 @@ This project is licensed under the MIT License. See the `LICENSE` file for detai
 ## Contact
 
 - **Project Owner:** CyberLabs Education Team
-- **GitHub:** [CyberLabs Repository](https://github.com/cyberlabs/memory-vulnerabilities)
-- **Email:** education@cyberlabs.com
+- **GitHub:** [CyberLabs Repository](https://github.com/alicangonullu/CyberLabs/memory-vulnerabilities)
+- **Email:** alicangonullu@yahoo.com
 
 ## Acknowledgments
 

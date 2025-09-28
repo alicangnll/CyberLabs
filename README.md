@@ -223,8 +223,8 @@ Bu proje MIT lisansı altında lisanslanmıştır. Detaylar için `LICENSE` dosy
 ## İletişim
 
 - **Proje Sahibi:** CyberLabs Eğitim Ekibi
-- **GitHub:** [CyberLabs Repository](https://github.com/cyberlabs/memory-vulnerabilities)
-- **E-posta:** education@cyberlabs.com
+- **GitHub:** [CyberLabs Repository](https://github.com/alicangonullu/CyberLabs/memory-vulnerabilities)
+- **E-posta:** alicangonullu@yahoo.com
 
 ## Teşekkürler
 
